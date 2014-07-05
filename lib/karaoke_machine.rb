@@ -24,8 +24,7 @@ class Melody
   end
 
   def transpose(amount)
-    new_notes = @notes.map {|n| n.change(amount) }
-    self.class.new(new_notes)
+    self.class.new(@notes.map {|n| n.change(amount) })
   end
 end
 
@@ -43,8 +42,7 @@ class Note
     end
 
     def from_string(string)
-      index = @sequence.index(string)
-      if index
+      if index = @sequence.index(string)
         new(index, string)
       else
         NilNote.new(string)
