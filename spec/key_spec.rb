@@ -2,12 +2,21 @@ require 'spec_helper'
 
 describe Key do
   describe "#transpose" do
+    let(:key) { described_class.from_string(key_name) }
+
     subject do
       key.transpose(amount)
     end
 
+    let(:key_name) { "C" }
+    let(:amount) { 0 }
+
+    it do
+      is_expected.to be_instance_of(described_class)
+    end
+
     context "when in key C" do
-      let(:key) { described_class.from_string("C") }
+      let(:key_name) { "C" }
 
       [
         [0, "C"],
@@ -34,7 +43,7 @@ describe Key do
     end
 
     context "when in key D" do
-      let(:key) { described_class.from_string("D") }
+      let(:key_name) { "D" }
 
       [
         [0, "D"],
