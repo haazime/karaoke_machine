@@ -1,13 +1,5 @@
 # coding: utf-8
-
-class KaraokeMachine
-  def initialize(melody)
-  end
-
-  def transpose(amount)
-    "" # これは仮実装なので消してください
-  end
-end
+require 'spec_helper'
 
 describe KaraokeMachine do
   it "メロディ無し" do
