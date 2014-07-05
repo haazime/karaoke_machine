@@ -9,6 +9,32 @@ class KaraokeMachine
   end
 end
 
+class Key
+  SEQUENCE = %w|C C# D D# E F F# G G# A A# B|
+
+  def self.from_string(name)
+    new(SEQUENCE.index(name), name)
+  end
+
+  def initialize(index, name)
+    @index = index
+    @name = name
+  end
+
+  def transpose(amount)
+    new_index = (@index + amount).modulo(SEQUENCE.size)
+    self.class.from_string(SEQUENCE.at(new_index))
+  end
+
+  def to_s
+    @name
+  end
+
+  def ==(other)
+    self.to_s == other.to_s
+  end
+end
+
 class Melody
 
   def self.from_string(string)
