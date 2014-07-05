@@ -30,7 +30,7 @@ class Melody
 end
 
 class Note
-  SEQUENCE = %w|C C# D D# E F F# G G# A A# B|
+  @sequence = %w|C C# D D# E F F# G G# A A# B|
 
   class << self
 
@@ -39,11 +39,11 @@ class Note
     end
 
     def resolve_name(amount)
-      SEQUENCE.at(amount.modulo(SEQUENCE.size))
+      @sequence.at(amount.modulo(@sequence.size))
     end
 
     def from_string(string)
-      index = SEQUENCE.index(string)
+      index = @sequence.index(string)
       if index
         new(index, string)
       else
