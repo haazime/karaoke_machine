@@ -10,24 +10,37 @@ class KaraokeMachine
 end
 
 class Key
-  SEQUENCE = %w|C C# D D# E F F# G G# A A# B|
+  @sequence = %w|C C# D D# E F F# G G# A A# B|
 
-  def self.from_string(name)
-    new(SEQUENCE.index(name), name)
+  class << self
+
+    def resolve_name(index)
+      @sequence.at(index)
+    end
+
+    def from_amount(amount)
+      from_string(resolve_name(amount.modulo(@sequence.size)))
+    end
+
+    def from_string(name_string)
+      if index = @sequence.index(name_string)
+        new(index)
+      else
+        NilNote.new(name_string)
+      end
+    end
   end
 
-  def initialize(index, name)
+  def initialize(index)
     @index = index
-    @name = name
   end
 
   def transpose(amount)
-    new_index = (@index + amount).modulo(SEQUENCE.size)
-    self.class.from_string(SEQUENCE.at(new_index))
+    self.class.from_amount(@index + amount)
   end
 
   def to_s
-    @name
+    self.class.resolve_name(@index)
   end
 
   def ==(other)
