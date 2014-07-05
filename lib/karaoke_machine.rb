@@ -12,7 +12,7 @@ end
 class Melody
 
   def self.from_string(string)
-    new(Note.names(string).map {|n| Note.from_string(n) })
+    new(Note.parse(string).map {|n| Note.from_string(n) })
   end
 
   def initialize(notes)
@@ -34,7 +34,7 @@ class Note
 
   class << self
 
-    def names(string)
+    def parse(string)
       string.scan(/[A-G \|]#?/)
     end
 
