@@ -45,7 +45,7 @@ class Note
       if index = @sequence.index(string)
         new(index, string)
       else
-        NilNote.new(string)
+        RestOrBar.new(string)
       end
     end
   end
@@ -63,15 +63,15 @@ class Note
     new_name = self.class.resolve_name(@index + amount)
     self.class.from_string(new_name)
   end
+end
 
-  class NilNote < Struct.new(:name)
+class RestOrBar < Struct.new(:name)
 
-    def change(amount)
-      self
-    end
+  def change(amount)
+    self
+  end
 
-    def play
-      self.name
-    end
+  def play
+    self.name
   end
 end
