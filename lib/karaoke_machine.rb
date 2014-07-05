@@ -24,7 +24,7 @@ class Melody
   end
 
   def transpose(amount)
-    self.class.new(@notes.map {|n| n.change(amount) })
+    self.class.new(@notes.map {|n| n.transpose(amount) })
   end
 end
 
@@ -59,7 +59,7 @@ class Note
     @name
   end
 
-  def change(amount)
+  def transpose(amount)
     new_name = self.class.resolve_name(@index + amount)
     self.class.from_string(new_name)
   end
@@ -67,7 +67,7 @@ end
 
 class RestOrBar < Struct.new(:name)
 
-  def change(amount)
+  def transpose(amount)
     self
   end
 
