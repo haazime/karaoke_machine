@@ -16,17 +16,17 @@ describe KaraokeMachine do
     expect(KaraokeMachine.new(melody).transpose(0)).to eq answer
   end
 
-#  it "2上げる" do
-#    melody = "C D E F |E D C   |E F G A |G F E   |C   C   |C   C   |CCDDEEFF|E D C   "
-#    answer = "D E F# G |F# E D   |F# G A B |A G F#   |D   D   |D   D   |DDEEF#F#GG|F# E D   "
-#    expect(KaraokeMachine.new(melody).transpose(2)).to eq answer
-#  end
-#
-#  it "7上げる" do
-#    melody = "C D E F |E D C   |E F G A |G F E   |C   C   |C   C   |CCDDEEFF|E D C   "
-#    answer = "G A B C |B A G   |B C D E |D C B   |G   G   |G   G   |GGAABBCC|B A G   "
-#    expect(KaraokeMachine.new(melody).transpose(7)).to eq answer
-#  end
+  it "2上げる" do
+    melody = "C D E F |E D C   |E F G A |G F E   |C   C   |C   C   |CCDDEEFF|E D C   "
+    answer = "D E F# G |F# E D   |F# G A B |A G F#   |D   D   |D   D   |DDEEF#F#GG|F# E D   "
+    expect(KaraokeMachine.new(melody).transpose(2)).to eq answer
+  end
+
+  it "7上げる" do
+    melody = "C D E F |E D C   |E F G A |G F E   |C   C   |C   C   |CCDDEEFF|E D C   "
+    answer = "G A B C |B A G   |B C D E |D C B   |G   G   |G   G   |GGAABBCC|B A G   "
+    expect(KaraokeMachine.new(melody).transpose(7)).to eq answer
+  end
 
   it "1下げる" do
     melody = "C D E F |E D C   |E F G A |G F E   |C   C   |C   C   |CCDDEEFF|E D C   "
@@ -93,6 +93,8 @@ describe KaraokeMachine do
     answer = "C D E F |E D C   |E F G A |G F E   |C   C   |C   C   |CCDDEEFF|E D C   "
     expect(KaraokeMachine.new(melody).transpose(6)).to eq answer
   end
+end
+__END__
 
   it "6下げる(メロディはF#から開始)" do
     melody = "F# G# A# B |A# G# F#   |A# B C# D# |C# B A#   |F#   F#   |F#   F#   |F#F#G#G#A#A#BB|A# G# F#   "

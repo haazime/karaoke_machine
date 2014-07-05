@@ -1,11 +1,11 @@
 require 'spec_helper'
 
 describe Key do
-  describe "#transpose" do
+  describe "#change" do
     let(:key) { described_class.from_string(key_name) }
 
     subject do
-      key.transpose(amount)
+      key.change(amount)
     end
 
     let(:key_name) { "C" }
