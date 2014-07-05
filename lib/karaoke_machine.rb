@@ -12,9 +12,7 @@ end
 class Melody
 
   def self.from_string(string)
-    new(
-      string.split('').map{|n| Note.from_string(n) }
-    )
+    new(Note.names(string).map {|n| Note.from_string(n) })
   end
 
   def initialize(notes)
@@ -34,16 +32,23 @@ end
 class Note
   SEQUENCE = %w|C C# D D# E F F# G G# A A# B|
 
-  def self.sequence(octave=1)
-    SEQUENCE.cycle(octave).to_a
-  end
+  class << self
 
-  def self.from_string(string)
-    index = SEQUENCE.index(string)
-    if index
-      new(index, string)
-    else
-      NilNote.new(string)
+    def names(string)
+      string.scan(/[A-G \|]#?/)
+    end
+
+    def resolve_name(amount)
+      SEQUENCE.at(amount.modulo(SEQUENCE.size))
+    end
+
+    def from_string(string)
+      index = SEQUENCE.index(string)
+      if index
+        new(index, string)
+      else
+        NilNote.new(string)
+      end
     end
   end
 
@@ -57,18 +62,18 @@ class Note
   end
 
   def change(amount)
-    new_name = self.class.sequence(2).values_at(@index + amount)
+    new_name = self.class.resolve_name(@index + amount)
     self.class.from_string(new_name)
   end
-end
 
-class NilNote < Struct.new(:name)
+  class NilNote < Struct.new(:name)
 
-  def change(amount)
-    self
-  end
+    def change(amount)
+      self
+    end
 
-  def play
-    self.name
+    def play
+      self.name
+    end
   end
 end
