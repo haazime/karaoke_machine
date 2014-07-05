@@ -34,6 +34,10 @@ end
 class Note
   SEQUENCE = %w|C C# D D# E F F# G G# A A# B|
 
+  def self.sequence(octave=1)
+    SEQUENCE.cycle(octave).to_a
+  end
+
   def self.from_string(string)
     index = SEQUENCE.index(string)
     if index
@@ -53,7 +57,7 @@ class Note
   end
 
   def change(amount)
-    new_name = SEQUENCE.values_at(@index + amount)
+    new_name = self.class.sequence(2).values_at(@index + amount)
     self.class.from_string(new_name)
   end
 end

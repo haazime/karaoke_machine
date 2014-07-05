@@ -22,12 +22,12 @@ describe KaraokeMachine do
     expect(KaraokeMachine.new(melody).transpose(2)).to eq answer
   end
 
-  # it "7上げる" do
-  #   melody = "C D E F |E D C   |E F G A |G F E   |C   C   |C   C   |CCDDEEFF|E D C   "
-  #   answer = "G A B C |B A G   |B C D E |D C B   |G   G   |G   G   |GGAABBCC|B A G   "
-  #   expect(KaraokeMachine.new(melody).transpose(7)).to eq answer
-  # end
-  #
+  it "7上げる" do
+    melody = "C D E F |E D C   |E F G A |G F E   |C   C   |C   C   |CCDDEEFF|E D C   "
+    answer = "G A B C |B A G   |B C D E |D C B   |G   G   |G   G   |GGAABBCC|B A G   "
+    expect(KaraokeMachine.new(melody).transpose(7)).to eq answer
+  end
+
   # it "1下げる" do
   #   melody = "C D E F |E D C   |E F G A |G F E   |C   C   |C   C   |CCDDEEFF|E D C   "
   #   answer = "B C# D# E |D# C# B   |D# E F# G# |F# E D#   |B   B   |B   B   |BBC#C#D#D#EE|D# C# B   "
