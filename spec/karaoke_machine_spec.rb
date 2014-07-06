@@ -93,8 +93,6 @@ describe KaraokeMachine do
     answer = "C D E F |E D C   |E F G A |G F E   |C   C   |C   C   |CCDDEEFF|E D C   "
     expect(KaraokeMachine.new(melody).transpose(6)).to eq answer
   end
-end
-__END__
 
   it "6下げる(メロディはF#から開始)" do
     melody = "F# G# A# B |A# G# F#   |A# B C# D# |C# B A#   |F#   F#   |F#   F#   |F#F#G#G#A#A#BB|A# G# F#   "
