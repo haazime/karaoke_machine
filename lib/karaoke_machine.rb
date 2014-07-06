@@ -13,8 +13,7 @@ class Melody
 
   def self.parse(string)
     notes = string.scan(/(?:[A-G]#?|[ \|])/).map do |token|
-      ToneResolver.create_tone_from_string(token) ||
-        RestOrBar.new(token)
+      Tone.from_string(token) || RestOrBar.new(token)
     end
     new(notes)
   end
@@ -28,37 +27,29 @@ class Melody
   end
 
   def present
-    @notes.inject("") {|melody, n| melody += n.present(ToneResolver) }
-  end
-end
-
-module ToneResolver
-  extend self
-
-  @names = %w|C C# D D# E F F# G G# A A# B|
-
-  def create_tone_from_string(string)
-    return nil unless @names.include?(string)
-    Tone.new(@names.index(string))
-  end
-
-  def resolve(index)
-    @names.at(index.modulo(@names.size))
+    @notes.inject("") {|melody, n| melody += n.present }
   end
 end
 
 class Tone
+  NAMES = %w|C C# D D# E F F# G G# A A# B|
+
+  def self.from_string(string)
+    return nil unless NAMES.include?(string)
+    Tone.new(NAMES.index(string))
+  end
 
   def initialize(index)
     @index = index
   end
 
   def change(amount)
-    self.class.new(@index + amount)
+    new_index = (@index + amount).modulo(NAMES.size)
+    self.class.new(new_index)
   end
 
-  def present(resolver)
-    resolver.resolve(@index)
+  def present
+    NAMES.at(@index)
   end
 end
 
@@ -68,7 +59,7 @@ class RestOrBar < Struct.new(:string)
     self
   end
 
-  def present(*args)
+  def present
     self.string
   end
 end
