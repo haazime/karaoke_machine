@@ -5,7 +5,7 @@ class KaraokeMachine
   end
 
   def transpose(amount)
-    @melody.transpose(amount).to_s
+    @melody.transpose(amount).present
   end
 end
 
@@ -13,11 +13,8 @@ class Melody
 
   def self.parse(string)
     notes = string.scan(/(?:[A-G]#?|[ \|])/).map do |token|
-      if ToneResolver === token
-        Tone.new(token)
-      else
+      ToneResolver.create_tone_from_string(token) ||
         RestOrBar.new(token)
-      end
     end
     new(notes)
   end
@@ -27,11 +24,11 @@ class Melody
   end
 
   def transpose(amount)
-    self.class.new(@notes.map {|n| n.transpose(amount) })
+    self.class.new(@notes.map {|n| n.change(amount) })
   end
 
-  def to_s
-    @notes.map {|n| n.to_s }.join
+  def present
+    @notes.inject("") {|melody, n| melody += n.present(ToneResolver) }
   end
 end
 
@@ -40,39 +37,38 @@ module ToneResolver
 
   @names = %w|C C# D D# E F F# G G# A A# B|
 
-  def resolve(name, amount)
-    new_index = (@names.index(name) + amount).modulo(@names.size)
-    @names.at(new_index)
+  def create_tone_from_string(string)
+    return nil unless @names.include?(string)
+    Tone.new(@names.index(string))
   end
 
-  def ===(candidate)
-    @names.include?(candidate)
+  def resolve(index)
+    @names.at(index.modulo(@names.size))
   end
 end
 
 class Tone
 
-  def initialize(name, resolver=ToneResolver)
-    @name = name
-    @resolver = resolver
+  def initialize(index)
+    @index = index
   end
 
-  def transpose(amount)
-    self.class.new(@resolver.resolve(@name, amount))
+  def change(amount)
+    self.class.new(@index + amount)
   end
 
-  def to_s
-    @name
+  def present(resolver)
+    resolver.resolve(@index)
   end
 end
 
 class RestOrBar < Struct.new(:string)
 
-  def transpose(*args)
+  def change(*args)
     self
   end
 
-  def to_s
+  def present(*args)
     self.string
   end
 end
