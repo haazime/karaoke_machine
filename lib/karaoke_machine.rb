@@ -1,119 +1,91 @@
 class KaraokeMachine
 
   def initialize(melody_string)
-    @melody = MelodyParser.parse(melody_string)
+    @melody = Melody.parse(melody_string)
   end
 
   def transpose(amount)
-    return "" if @melody.empty?
-    @melody.transpose(amount).present
-  end
-end
-
-class Key
-  @sequence = %w|C C# D D# E F F# G G# A A# B|
-
-  class << self
-
-    def resolve_index(name)
-      @sequence.index(name)
-    end
-
-    def resolve_name(index)
-      @sequence.at(index.modulo(@sequence.size))
-    end
-
-    def from_amount(amount)
-      from_string(resolve_name(amount))
-    end
-
-    def from_string(name)
-      new(resolve_index(name), name)
-    end
-  end
-
-  def initialize(index, name)
-    @index = index
-    @name = name
-  end
-
-  def change(amount)
-    self.class.from_amount(@index + amount)
-  end
-
-  def fix(degree_amount)
-    self.class.resolve_name(@index + degree_amount)
-  end
-
-  def to_s
-    @name
-  end
-
-  def ==(other)
-    self.to_s == other.to_s
-  end
-end
-
-module MelodyParser
-  extend self
-
-  def parse(string)
-    elements = string.scan(/(?:[A-G]#?|[ \|])/)
-    key = Key.from_string(elements.first)
-    notes = elements.map do |e|
-      case e
-      when /[A-G]#?/; Degree.new(Key.resolve_index(e))
-      when ' '      ; Rest
-      when '|'      ; Bar
-      end
-    end
-    Melody.new(key, notes)
+    @melody.transpose(amount).to_s
   end
 end
 
 class Melody
 
-  def initialize(key, notes)
-    @key = key
+  def self.parse(string)
+    notes = string.scan(/(?:[A-G]#?|[ \|])/).map do |token|
+      case token
+      when ToneSequence; Tone.new(token)
+      when Rest.to_s   ; Rest
+      when Bar.to_s    ; Bar
+      end
+    end
+    new(notes)
+  end
+
+  def initialize(notes)
     @notes = notes
   end
 
-  def present
-    @notes.inject("") {|r, n| r += n.fix(@key) }
-  end
-
   def transpose(amount)
-    self.class.new(@key.change(amount), @notes)
+    self.class.new(@notes.map {|n| n.transpose(amount) })
   end
 
-  def empty?
-    @notes.empty?
+  def to_s
+    @notes.map {|n| n.to_s }.join
   end
 end
 
-class Degree
+module ToneSequence
+  extend self
 
-  def initialize(amount)
-    @amount = amount
+  @names = %w|C C# D D# E F F# G G# A A# B|
+
+  def transpose(current, amount)
+    new_index = (@names.index(current) + amount).modulo(@names.size)
+    @names.at(new_index)
   end
 
-  def fix(key)
-    key.fix(@amount)
+  def ===(candidate)
+    @names.include?(candidate)
+  end
+end
+
+class Tone
+
+  def initialize(name, sequence=ToneSequence)
+    @name = name
+    @sequence = sequence
+  end
+
+  def transpose(amount)
+    self.class.new(@sequence.transpose(@name, amount))
+  end
+
+  def to_s
+    @name
   end
 end
 
 module Rest
   extend self
 
-  def fix(*args)
-    " "
+  def transpose(*args)
+    self
+  end
+
+  def to_s
+    ' '
   end
 end
 
 module Bar
   extend self
 
-  def fix(*args)
+  def transpose(*args)
+    self
+  end
+
+  def to_s
     '|'
   end
 end
