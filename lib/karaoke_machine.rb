@@ -13,10 +13,10 @@ class Melody
 
   def self.parse(string)
     notes = string.scan(/(?:[A-G]#?|[ \|])/).map do |token|
-      case token
-      when ToneSequence; Tone.new(token)
-      when Rest.to_s   ; Rest
-      when Bar.to_s    ; Bar
+      if ToneSequence === token
+        Tone.new(token)
+      else
+        RestOrBar.new(token)
       end
     end
     new(notes)
@@ -66,26 +66,13 @@ class Tone
   end
 end
 
-module Rest
-  extend self
+class RestOrBar < Struct.new(:string)
 
   def transpose(*args)
     self
   end
 
   def to_s
-    ' '
-  end
-end
-
-module Bar
-  extend self
-
-  def transpose(*args)
-    self
-  end
-
-  def to_s
-    '|'
+    self.string
   end
 end
