@@ -24,11 +24,11 @@ class Melody
   end
 
   def transpose(amount)
-    self.class.new(@notes.map {|n| n.transpose(amount) })
+    self.class.new(@notes.map {|n| n.change(amount) })
   end
 
   def present
-    @notes.map {|n| n.present(ToneResolver) }.join
+    @notes.inject("") {|melody, n| melody += n.present(ToneResolver) }
   end
 end
 
@@ -53,7 +53,7 @@ class Tone
     @index = index
   end
 
-  def transpose(amount)
+  def change(amount)
     self.class.new(@index + amount)
   end
 
@@ -64,7 +64,7 @@ end
 
 class RestOrBar < Struct.new(:string)
 
-  def transpose(*args)
+  def change(*args)
     self
   end
 
