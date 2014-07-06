@@ -13,7 +13,7 @@ class Melody
 
   def self.parse(string)
     notes = string.scan(/(?:[A-G]#?|[ \|])/).map do |token|
-      if ToneSequence === token
+      if ToneResolver === token
         Tone.new(token)
       else
         RestOrBar.new(token)
@@ -35,13 +35,13 @@ class Melody
   end
 end
 
-module ToneSequence
+module ToneResolver
   extend self
 
   @names = %w|C C# D D# E F F# G G# A A# B|
 
-  def transpose(current, amount)
-    new_index = (@names.index(current) + amount).modulo(@names.size)
+  def resolve(name, amount)
+    new_index = (@names.index(name) + amount).modulo(@names.size)
     @names.at(new_index)
   end
 
@@ -52,13 +52,13 @@ end
 
 class Tone
 
-  def initialize(name, sequence=ToneSequence)
+  def initialize(name, resolver=ToneResolver)
     @name = name
-    @sequence = sequence
+    @resolver = resolver
   end
 
   def transpose(amount)
-    self.class.new(@sequence.transpose(@name, amount))
+    self.class.new(@resolver.resolve(@name, amount))
   end
 
   def to_s
