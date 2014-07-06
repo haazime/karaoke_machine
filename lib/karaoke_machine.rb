@@ -13,11 +13,8 @@ class Melody
 
   def self.parse(string)
     notes = string.scan(/(?:[A-G]#?|[ \|])/).map do |token|
-      if ToneResolver === token
-        ToneResolver.create_tone_from_string(token)
-      else
+      ToneResolver.create_tone_from_string(token) ||
         RestOrBar.new(token)
-      end
     end
     new(notes)
   end
@@ -41,15 +38,12 @@ module ToneResolver
   @names = %w|C C# D D# E F F# G G# A A# B|
 
   def create_tone_from_string(string)
+    return nil unless @names.include?(string)
     Tone.new(@names.index(string))
   end
 
   def resolve(index)
     @names.at(index.modulo(@names.size))
-  end
-
-  def ===(candidate)
-    @names.include?(candidate)
   end
 end
 
