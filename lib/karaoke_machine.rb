@@ -5,7 +5,7 @@ class KaraokeMachine
   end
 
   def transpose(amount)
-    @melody.transpose(amount).to_s
+    @melody.transpose(amount).present
   end
 end
 
@@ -30,8 +30,8 @@ class Melody
     self.class.new(@notes.map {|n| n.transpose(amount) })
   end
 
-  def to_s
-    @notes.map {|n| n.to_s(ToneResolver) }.join
+  def present
+    @notes.map {|n| n.present(ToneResolver) }.join
   end
 end
 
@@ -63,7 +63,7 @@ class Tone
     self.class.new(@index + amount)
   end
 
-  def to_s(resolver)
+  def present(resolver)
     resolver.resolve(@index)
   end
 end
@@ -74,7 +74,7 @@ class RestOrBar < Struct.new(:string)
     self
   end
 
-  def to_s(*args)
+  def present(*args)
     self.string
   end
 end
