@@ -6,9 +6,13 @@ class KaraokeMachine
   end
 
   def transpose(amount)
-    @melody
-      .scan(/[A-G]#?|[ \|]/)
-      .map {|e| TONES.at((TONES.index(e) + amount) % TONES.size) rescue e }
-      .join
+    @melody.gsub(/[A-G]#?/, converting_hash(amount))
+  end
+
+private
+
+  def converting_hash(amount)
+    transposed = TONES.rotate(amount % TONES.size)
+    Hash[TONES.zip(transposed)]
   end
 end
